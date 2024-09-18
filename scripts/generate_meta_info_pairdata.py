@@ -17,7 +17,7 @@ def main(args):
         img_name_gt = os.path.relpath(img_path_gt, args.root[0])
         img_name_lq = os.path.relpath(img_path_lq, args.root[1])
         print(f'{img_name_gt}, {img_name_lq}')
-        txt_file.write(f'{img_name_gt}, {img_name_lq}\n')
+        txt_file.write(f'{img_name_gt} {img_name_lq}\n')
 
 
 if __name__ == '__main__':

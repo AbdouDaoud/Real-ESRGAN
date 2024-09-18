@@ -38,8 +38,8 @@ datasets:
   train:
     name: DF2K+OST
     type: RealESRGANDataset
-    dataroot_gt: datasets/DF2K
-    meta_info: datasets/DF2K/meta_info/meta_info_DF2Kmultiscale+OST_sub.txt
+    dataroot_gt: data
+    meta_info: data/our_meta_info_pair.txt
     io_backend:
       type: disk
 
@@ -99,7 +99,7 @@ network_d:
 # path
 path:
   # use the pre-trained Real-ESRNet model
-  pretrain_network_g: experiments/pretrained_models/RealESRNet_x4plus.pth
+  pretrain_network_g: experiments/pretrained_models/RealESRGAN_x4plus.pth
   param_key_g: params_ema
   strict_load_g: true
   resume_state: ~

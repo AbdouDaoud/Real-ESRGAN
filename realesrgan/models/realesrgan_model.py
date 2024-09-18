@@ -215,20 +215,31 @@ class RealESRGANModel(SRGANModel):
                 l_g_pix = self.cri_pix(self.output, l1_gt)
                 l_g_total += l_g_pix
                 loss_dict['l_g_pix'] = l_g_pix
+
+                self.log('train/l_g_pix', l_g_pix, on_step=True, on_epoch=True)
             # perceptual loss
             if self.cri_perceptual:
                 l_g_percep, l_g_style = self.cri_perceptual(self.output, percep_gt)
                 if l_g_percep is not None:
                     l_g_total += l_g_percep
                     loss_dict['l_g_percep'] = l_g_percep
+
+                    self.log('train/l_g_percep', l_g_percep, on_step=True, on_epoch=True)
+
                 if l_g_style is not None:
                     l_g_total += l_g_style
                     loss_dict['l_g_style'] = l_g_style
+
+                    self.log('train/l_g_style', l_g_style, on_step=True, on_epoch=True)
+
             # gan loss
             fake_g_pred = self.net_d(self.output)
             l_g_gan = self.cri_gan(fake_g_pred, True, is_disc=False)
             l_g_total += l_g_gan
             loss_dict['l_g_gan'] = l_g_gan
+
+            self.log('train/l_g_gan', l_g_gan, on_step=True, on_epoch=True)
+
 
             l_g_total.backward()
             self.optimizer_g.step()
@@ -243,12 +254,21 @@ class RealESRGANModel(SRGANModel):
         l_d_real = self.cri_gan(real_d_pred, True, is_disc=True)
         loss_dict['l_d_real'] = l_d_real
         loss_dict['out_d_real'] = torch.mean(real_d_pred.detach())
+
+        self.log('train/l_d_real', l_d_real, on_step=True, on_epoch=True)
+        self.log('train/out_d_real', torch.mean(real_d_pred.detach()), on_step=True, on_epoch=True)
+
         l_d_real.backward()
         # fake
         fake_d_pred = self.net_d(self.output.detach().clone())  # clone for pt1.9
         l_d_fake = self.cri_gan(fake_d_pred, False, is_disc=True)
         loss_dict['l_d_fake'] = l_d_fake
         loss_dict['out_d_fake'] = torch.mean(fake_d_pred.detach())
+
+        self.log('train/l_d_fake', l_d_fake, on_step=True, on_epoch=True)
+        self.log('train/out_d_fake', torch.mean(fake_d_pred.detach()), on_step=True, on_epoch=True)
+
+
         l_d_fake.backward()
         self.optimizer_d.step()
 
